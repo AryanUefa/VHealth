@@ -25,9 +25,12 @@ app.set("view engine", "ejs");
 app.get("/", (req, res) => {
   res.render("login");
 });
+
+
 app.post("/scan", async (req,res)=>{
   try {
     const check = await collection.findOne({ eid: req.body.doctorname });
+    // console.log(eid);
       if(!check){
         res.render("wronguser");
       }
@@ -39,17 +42,24 @@ app.post("/scan", async (req,res)=>{
     res.render("error");
   }
 });
+// app.post("/scan",(req,res)=>{
+//   res.render("scan");
+// });
+
 app.get("/login", (req, res) => {
   res.render("login");
 });
 app.get("/signup", (req, res) => {
   res.render("signup");
 });
+
 app.get("/home", (req, res) => {
   res.render("home");
 });
-app.get("/runcmd", async (req, res) => {
-  exec("python datafetch.py fetch", (error, stdout, stderr) => {
+app.post("/runcmd", async (req, res) => {
+  const { regno } = req.body;
+  // console.log(regno);
+  exec("python datafetch.py fetch "+regno, (error, stdout, stderr) => {
     if (error) {
       console.error("Error executing command:", error.message);
       return res.status(500).send("Error executing command");
