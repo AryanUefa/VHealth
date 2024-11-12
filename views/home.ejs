@@ -1,471 +1,511 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Dashboard</title>
+    <title>Patient Dashboard - VHealth</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <style>
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #333;
+            --h2-color: #2c3e50;
+            --label-color: #34495e;
+            --header-bg: #ffffff;
+            --form-bg: #ffffff;
+            --button-bg: #4a90e2;
+            --button-text: #ffffff;
+            --link-color: #4a90e2;
+            --font-size: 16px;
+        }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: rgba(51, 51, 51,0.2);
+            font-size: var(--font-size);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
-        .patient-details{
-            width: 100%;
-            justify-content: center;
-            /* padding-top: 20px; */
+        .header {
+            background-color: var(--header-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        .nav-container {
             display: flex;
-            background-color: rgba(100, 149, 237,0.35);
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        #patientForm{
-            margin-top: 28px;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
             display: flex;
-            padding-left: 30px;
-            font-size: large;
+            gap: 1rem;
         }
 
-        .form-group1{
-            padding: 5px;
-            padding-left: 100px;
-        }
-        
-        .form-group{
-            padding: 5px;
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
 
-        .certificate {
+        .nav-links a:hover {
+            background-color: var(--bg-color);
+            color: var(--link-color);
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 2rem;
+            height: 2rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .hamburger div {
+            width: 2rem;
+            height: 0.25rem;
+            background: var(--text-color);
+            border-radius: 10px;
+            transition: all 0.3s linear;
+            position: relative;
+            transform-origin: 1px;
+        }
+
+        .settings-popup {
             display: none;
-            max-width: 600px;
-            margin: 20px auto;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--form-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1001;
+        }
+
+        .settings-popup button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: white;
+        }
+
+        .patient-details, .diagnosis, .prescription {
+            background-color: var(--form-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-details {
+            background-color: var(--button-bg);
+            color: white;
         }
 
         h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        .personal-info,
-        .med-details,
-        .symptoms,
-        .rest-advice,
-        .doctor-signature {
-            margin-bottom: 15px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        strong {
-            font-weight: bold;
-        }
-
-        .doctor-signature {
-            text-align: right;
-        }
-        .container {
+            color: var(--h2-color);
+            margin-bottom: 20px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            /* padding: 20px; */
         }
 
-        
-        .past-visits,
-        .diagnosis,
-        .prescription {
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 20px;
+        h1 svg {
+            margin-right: 10px;
         }
 
-        hr {
-            width: 100%;
-            /* margin-top: 20px; */
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
+        .form-group, .form-group1 {
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 1rem;
         }
 
-        textarea,
         input[type="text"],
-        input[type="number"] {
+        input[type="number"],
+        textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid black;
-            border-radius: 5px;
-            background-color: white;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .compact-input, .compact-input1 {
+            display: flex;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+
+        .compact-input label, .compact-input1 label {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+
+        .compact-input input {
+            width: 60px;
+        }
+
+        .compact-input1 input {
+            width: 150px;
+        }
+
+        .try {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .timings, .food {
+            display: flex;
+            gap: 15px;
         }
 
         button {
-            padding: 10px 20px;
-            background-color: green;
+            background-color: #27ae60;
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 10px 15px;
+            border-radius: 4px;
             cursor: pointer;
-        }
-
-        button:hover {
-            background-color: darkgreen;
-        }
-
-        .medicine {
+            transition: background-color 0.3s;
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
         }
 
-        .medicine input {
-            margin-right: 10px;
+        button svg {
+            margin-right: 5px;
         }
 
-        /* .try{
-            display: flex;
-        } */
-
-        #medicineList{
-            padding-top: 5px;
-            padding-bottom: 5px;
+        button:hover {
+            background-color: #2ecc71;
         }
 
-        .timings{
+        .buttons {
             display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
         }
 
-        .food{
-            display: flex;
+        .newstndtbutton {
+            margin-top: 20px;
         }
-        #a-styling{
-            text-decoration: none;
-            color: white;
+
+        .certificate {
+            background-color: var(--form-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
         }
-        .buttons{
-            display: flex;
-            justify-content: space-around;
+
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
         }
-        .newstndtbutton{
-            display: flex;
-            justify-content: space-around;
-            margin-right: 47px;
-            /* flex-direction: row; */
+
+        .doctor-signature {
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        .dark-theme {
+            --bg-color: #1a1a1a;
+            --h2-color: #ffffff;
+            --label-color: rgb(229 231 235);
+            --text-color: #ffffff;
+            --header-bg: #2c2c2c;
+            --form-bg: #2c2c2c;
+            --button-bg: #4a90e2;
+            --button-text: #ffffff;
+            --link-color: #4a90e2;
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-
-        <!-- <div class="patient-details">
-            <form action="/scan" method="post">
-                <div class="form-group1">
-                    <input type="text" id="doctorid" name="doctorname" style="display: none;">
-                    <button type="submit"><a id="a-styling">Scan for New Student</a></button>
-                </div>
-            </form>
-        </div> -->
-
-        <div class="patient-details">
-            <h1>Patient Details</h1>
-            <form id="patientForm">
-                <div class="form-group1">
-                    <strong for="name">Name: </strong><span id="studentName"></span>
-                </div>
-
-                <div class="form-group1">
-                    <strong for="registrationNumber">Registration Number: </strong><span id="studentRegno"></span>
-                </div>
-
-                <div class="form-group1">
-                    <strong for="block">Block: </strong><span id="studentBlock"></span>
-                </div>
-
-                <div class="form-group1">
-                    <strong for="roomNumber">Room Number: </strong><span id="studentRoom"></span>
-                </div>
-
-                <!-- <div class="form-group">
-                    <label for="proctor">Proctor Email:<span id="studentProctor"></span></label>
-                </div>
-
-                <div class="form-group">
-                    <label for="guardian">Guardian Email:<span id="studentGuardian"></span></label>
-                </div>
-
-                <div class="form-group">
-                    <label for="student">Student Email:<span id="studentStudent"></span></label>
-                </div> -->
-            </form>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="/login" class="logo" data-translate="VHealth">VHealth</a>
+            <div class="nav-links">
+                <a href="/scan" data-translate="Home">Home</a>
+                <a href="/home" data-translate="Dashboard">Dashboard</a>
+                <a href="/login" onclick="loggingOut()" data-translate="Log Out">Log Out</a>
+                <a href="/signup" data-translate="Sign Up">Sign Up</a>
+            </div>
+            <button class="hamburger" onclick="toggleSettings()" aria-label="Settings">
+                <div></div>
+                <div></div>
+                <div></div>
+            </button>
+        </nav>
+        <div class="settings-popup" id="settingsPopup">
+            <button onclick="toggleTheme()" data-translate="Toggle Light/Dark Theme">Toggle Light/Dark Theme</button>
+            <button onclick="changeFontSize('increase')" data-translate="Increase Font Size">Increase Font Size</button>
+            <button onclick="changeFontSize('decrease')" data-translate="Decrease Font Size">Decrease Font Size</button>
+            <button onclick="toggleLanguage()" data-translate="Toggle English/Tamil">Toggle English/Tamil</button>
         </div>
-
-        <!-- <hr> -->
-
-        <div class="diagnosis">
-            <h1>Diagnosis</h1>
-            <form id="diagnosisForm">
-                <div class="form-group">
-                    <label for="symptoms">Symptoms:</label>
-                    <textarea id="symptoms" rows="3"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="temperature">Temp:</label>
-                    <input type="text" id="temperature">
-                </div>
-                
-                <div class="form-group">
-                    <label for="bloodPressure">BP:</label>
-                    <input type="text" id="bloodPressure">
-                </div>
-
-                <div class="form-group">
-                    <label for="o2Level">O2 Level:</label>
-                    <input type="text" id="o2Level">
-                </div>
-
-                <div class="form-group">
-                    <label for="diagnosis">Diagnosis:</label>
-                    <input type="text" id="diagnosis">
-                </div>
-            </form>
-        </div>
-
-        <hr>
-
-        <div class="prescription">
-            <h1>Prescription</h1>
-            <form id="prescriptionForm">
-                <div class="medicine">
-                    <label for="medicineName">Medicine Name:</label>
-                    <input type="text" id="medicineName">
-                </div>
-
-                <div class="form-group">
-                    <label for="frequency">Frequency:</label>
-                    <div class="try">
-                        <div class="timings">
-                            <label>
-                                Morning
-                                <input
-                                    type="checkbox"
-                                    id="morning"
-                                    class="mr-4 ml-2"
-                                    name="morning"
-                                >
-                            </label>
-                            <label>
-                                Evening
-                                <input
-                                    type="checkbox"
-                                    id="evening"
-                                    class="mr-4 ml-2"
-                                    name="evening"
-                                >
-                            </label>
-                            <label>
-                                Night
-                                <input
-                                    type="checkbox"
-                                    id="night"
-                                    class="mr-4 ml-2"
-                                    name="night"
-                                >
-                            </label>
-                        </div>
-                        
-                        <div class="food">
-                            <label>
-                                After Food
-                                <input
-                                    type="checkbox"
-                                    id="afterFood"
-                                    class="mr-4 ml-2"
-                                    name="afterFood"
-                                >
-                            </label>
-                            <label>
-                                Before Food
-                                <input
-                                    type="checkbox"
-                                    id="beforeFood"
-                                    class="ml-2"
-                                    name="beforeFood"
-                                >
-                            </label>
-                        </div>
-                        <!-- <div id="medicineList"></div>
-                        <div class="form-group">
-                            <button id="addMedicineBtn" onclick="addMedicine()">Add Medicine</button>
-                        </div> -->
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="daysRest">Days Rest:</label>
-                    <input type="number" id="daysRest">
-                </div>
-                <div class="buttons">
-                <button onclick="showMedicalCertificate()" type="submit">View Medical Certificate</button>
-                <button onclick="generatePDFAndSendEmailGuardian()">Send to Student and Guardian</button>
-                <button onclick="generatePDFAndSendEmail()">Send to Proctor</button>
-                </div>
-            </form>
-            <div class="newstndtbutton">
-                <form action="/scan" method="post">
+    </header>
+    <main class="main-content">
+        <div class="container">
+            <div class="patient-details">
+                <h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span data-translate="Patient Details">Patient Details</span>
+                </h1>
+                <form id="patientForm">
                     <div class="form-group1">
-                        <input type="text" id="doctorid" name="doctorname" style="height: 0px; display: none; ">
-                        <br>
-                        <button type="submit"><a id="a-styling">Scan for New Student</a></button>
+                        <strong data-translate="Name:">Name: </strong><span id="studentName"></span>
+                    </div>
+                    <div class="form-group1">
+                        <strong data-translate="Registration Number:">Registration Number: </strong><span id="studentRegno"></span>
+                    </div>
+                    <div class="form-group1">
+                        <strong data-translate="Block:">Block: </strong><span id="studentBlock"></span>
+                    </div>
+                    <div class="form-group1">
+                        <strong data-translate="Room Number:">Room Number: </strong><span id="studentRoom"></span>
                     </div>
                 </form>
             </div>
+
+            <div class="diagnosis">
+                <h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                    <span data-translate="Diagnosis">Diagnosis</span>
+                </h1>
+                <form id="diagnosisForm">
+                    <div class="form-group">
+                        <label for="symptoms" data-translate="Symptoms:">Symptoms:</label>
+                        <textarea id="symptoms" rows="3"></textarea>
+                    </div>
+                    <div class="compact-input">
+                        <label for="temperature" data-translate="Temp:">Temp:</label>
+                        <input type="text" id="temperature">
+                    </div>
+                    <div class="compact-input">
+                        <label for="bloodPressure" data-translate="BP:">BP:</label>
+                        <input type="text" id="bloodPressure">
+                    </div>
+                    <div class="compact-input">
+                        <label for="o2Level" data-translate="O2 Level:">O2 Level:</label>
+                        <input type="text" id="o2Level">
+                    </div>
+                    <div class="compact-input1">
+                        <label for="diagnosis" data-translate="Diagnosis">Diagnosis:</label>
+                        <input type="text" id="diagnosis">
+                    </div>
+                </form>
+            </div>
+
+            <div class="prescription">
+                <h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    <span data-translate="Prescription">Prescription</span>
+                </h1>
+                <form id="prescriptionForm">
+                    <div class="compact-input1">
+                        <label for="medicineName" data-translate="Medicine Name:">Medicine Name:</label>
+                        <input type="text" id="medicineName">
+                    </div>
+                    <div class="form-group">
+                        <label for="frequency" data-translate="Frequency:">Frequency:</label>
+                        <div class="try">
+                            <div class="timings">
+                                <label>
+                                    <input type="checkbox" id="morning" name="morning">
+                                    <span data-translate="Morning">Morning</span>
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="evening" name="evening">
+                                    <span data-translate="Evening">Evening</span>
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="night" name="night">
+                                    <span data-translate="Night">Night</span>
+                                </label>
+                            </div>
+                            <div class="food">
+                                <label>
+                                    <input type="checkbox" id="afterFood" name="afterFood">
+                                    <span data-translate="After Food">After Food</span>
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="beforeFood" name="beforeFood">
+                                    <span data-translate="Before Food">Before Food</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="compact-input">
+                        <label for="daysRest" data-translate="Days Rest:">Days Rest:</label>
+                        <input type="number" id="daysRest">
+                    </div>
+                    <div class="buttons">
+                        <button onclick="showMedicalCertificate()" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <span data-translate="View Medical Certificate">View Medical Certificate</span>
+                        </button>
+                        <button onclick="generatePDFAndSendEmailGuardian()" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span data-translate="Send to Student and Guardian">Send to Student and Guardian</span>
+                        </button>
+                        <button onclick="generatePDFAndSendEmail()" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span data-translate="Send to Proctor">Send to Proctor</span>
+                        </button>
+                    </div>
+                </form>
+                <div class="newstndtbutton">
+                    <form action="/scan" method="post">
+                        <div class="form-group1">
+                            <input type="hidden" id="doctorid" name="doctorName">
+                            <button type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                                <span data-translate="Scan for New Student">Scan for New Student</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="certificate" id="medicalCertificate" style="display: none;">
+                <h1 data-translate="Medical Certificate">Medical Certificate</h1>
+                <div class="personal-info">
+                    <p><strong data-translate="Name:">Name:</strong> <span id="mc-name"></span></p>
+                    <p><strong data-translate="Registration Number:">Registration Number:</strong> <span id="mc-registrationNumber"></span></p>
+                </div>
+                <hr>
+                <div class="med-details">
+                    <h2 data-translate="Medication Details">Medication Details</h2>
+                    <ul>
+                        <li><strong data-translate="Medicine Name:">Medicine Name:</strong> <span id="mc-medicineName"></span></li>
+                        <li><strong data-translate="Frequency:">Frequency:</strong> <span id="mc-frequency"></span></li>
+                    </ul>
+                </div>
+                <hr>
+                <div class="symptoms">
+                    <h2 data-translate="Symptoms">Symptoms</h2>
+                    <p id="mc-symptoms"></p>
+                </div>
+                <hr>
+                <div class="rest-advice">
+                    <h2 data-translate="Days of Rest Advice">Days of Rest Advice</h2>
+                    <p><span id="mc-daysRest"></span> days</p>
+                </div>
+                <hr>
+                <div class="doctor-signature">
+                    <p><strong data-translate="Doctor's Signature:">Doctor's Signature:</strong> <span id="doctorName"></span></p>
+                    <p><strong data-translate="Employee id:">Employee id:</strong> <span id="doctorID"></span></p>
+                    <p><strong data-translate="Date:">Date:</strong> <span id="currentDate"></span></p>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div class="certificate">
-        <h1>Medical Certificate</h1>
-        
-        <div class="personal-info">
-            <p><strong>Name:</strong> <span id="mc-name"></span></p>
-            <p><strong>Registration Number:</strong> <span id="mc-registrationNumber"></span></p>
-        </div>
-
-        <hr>
-
-        <div class="med-details">
-            <h2>Medication Details</h2>
-            <ul>
-                <li><strong>Medicine Name:</strong> <span id="mc-medicineName"></span></li>
-                <li><strong>Frequency:</strong><span id="mc-frequency"></span></li>
-            </ul>
-        </div>
-
-        <hr>
-
-        <div class="symptoms">
-            <h2>Symptoms</h2>
-            <p><span id="mc-symptoms"></span></p>
-        </div>
-
-        <hr>
-
-        <div class="rest-advice">
-            <h2>Days of Rest Advice</h2>
-            <p><span id="mc-daysRest"></span></p>
-        </div>
-
-        <hr>
-
-        <div class="doctor-signature">
-            <p><strong>Doctor's Signature:</strong><span id="doctorName"></span></p>
-            <p><strong>Employee id:</strong><span id="doctorID"></span></p>
-            <p><strong>Date:</strong><span id = "currentDate"></span></p>
-        </div>
-    </div>
+    </main>
 
     <script>
-        document.getElementById('studentName').innerText = localStorage.getItem('name');
-        document.getElementById('studentRegno').innerText = localStorage.getItem('registrationNumber');
-        document.getElementById('studentBlock').innerText = localStorage.getItem('block');
-        document.getElementById('studentRoom').innerText = localStorage.getItem('roomNumber');
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('studentName').innerText = localStorage.getItem('name') || '';
+            document.getElementById('studentRegno').innerText = localStorage.getItem('registrationNumber') || '';
+            document.getElementById('studentBlock').innerText = localStorage.getItem('block') || '';
+            document.getElementById('studentRoom').innerText = localStorage.getItem('roomNumber') || '';
 
-        // document.getElementById('studentGuardian').innerText = localStorage.getItem('guardianEmail');
-        // document.getElementById('studentProctor').innerText = localStorage.getItem('proctorEmail');
-        // document.getElementById('studentStudent').innerText = localStorage.getItem('studentEmail');
+            document.getElementById('doctorName').innerText = localStorage.getItem('doctorName') || '';
+            document.getElementById('doctorID').innerText = localStorage.getItem('empId') || '';
+            document.getElementById('doctorid').value = localStorage.getItem('empId') || '';
 
-        document.getElementById('doctorName').innerText = localStorage.getItem('doctorName');
-        document.getElementById('doctorID').innerText = localStorage.getItem('empId');
-        document.getElementById('doctorid').value = localStorage.getItem('empId');
+            if (isDarkTheme) {
+                document.body.classList.add('dark-theme');
+            }
+            document.documentElement.style.setProperty('--font-size', `${currentFontSize}px`);
+            updateLanguage();
+        });
 
-
-        let messageDetails=``;
+        let messageDetails = '';
 
         const currentDate = new Date();
-        const day = currentDate.getDate();
-        const month = currentDate.getMonth() + 1;
-        const year = currentDate.getFullYear();
-        const formattedDate = `${year}-${(month < 10 ? '0' : '') + month}-${(day < 10 ? '0' : '') + day}`;
-
-        // function addMedicine() {
-        //     const medicineContainer = document.createElement('div');
-        //     medicineContainer.classList.add('medicine');
-
-        //     // Input for medicine name
-        //     const medicineInput = document.createElement('input');
-        //     medicineInput.setAttribute('type', 'text');
-        //     medicineInput.classList.add('medicine-input');
-        //     medicineContainer.appendChild(medicineInput);
-
-        //     // Timing checkboxes
-        //     const timingsContainer = document.createElement('div');
-        //     timingsContainer.classList.add('timings');
-        //     const morningCheckbox = createCheckbox('morning', 'Morning');
-        //     const eveningCheckbox = createCheckbox('evening', 'Evening');
-        //     const nightCheckbox = createCheckbox('night', 'Night');
-        //     timingsContainer.appendChild(morningCheckbox);
-        //     timingsContainer.appendChild(eveningCheckbox);
-        //     timingsContainer.appendChild(nightCheckbox);
-        //     medicineContainer.appendChild(timingsContainer);
-
-        //     // Food checkboxes
-        //     const foodContainer = document.createElement('div');
-        //     foodContainer.classList.add('food');
-        //     const afterFoodCheckbox = createCheckbox('afterFood', 'After Food');
-        //     const beforeFoodCheckbox = createCheckbox('beforeFood', 'Before Food');
-        //     foodContainer.appendChild(afterFoodCheckbox);
-        //     foodContainer.appendChild(beforeFoodCheckbox);
-        //     medicineContainer.appendChild(foodContainer);
-
-        //     document.getElementById('medicineList').appendChild(medicineContainer);
-        //     // document.getElementById('med-details').appendChild(medicineContainer);
-        // }
-
-        // function createCheckbox(id, labelText) {
-        //     const label = document.createElement('label');
-        //     label.textContent = labelText;
-        //     const checkbox = document.createElement('input');
-        //     checkbox.setAttribute('type', 'checkbox');
-        //     checkbox.setAttribute('id', id);
-        //     checkbox.classList.add('mr-', 'ml-2');
-        //     checkbox.setAttribute('name', id);
-        //     label.appendChild(checkbox);
-        //     return label;
-        // }
+        const formattedDate = currentDate.toISOString().split('T')[0];
 
         function showMedicalCertificate() {
-            document.querySelector('.certificate').style.display = 'block';
-        }
-
-        document.getElementById('prescriptionForm').addEventListener('submit', function(event) {
-
-            event.preventDefault(); 
-
             const symptoms = document.getElementById('symptoms').value;
-            const temperature = document.getElementById('temperature').value;
-            const bloodPressure = document.getElementById('bloodPressure').value;
-            const o2Level = document.getElementById('o2Level').value;
-            const diagnosis = document.getElementById('diagnosis').value;
             const medicineName = document.getElementById('medicineName').value;
             const daysRest = document.getElementById('daysRest').value;
             const morning = document.getElementById('morning').checked;
@@ -474,62 +514,44 @@
             const afterFood = document.getElementById('afterFood').checked;
             const beforeFood = document.getElementById('beforeFood').checked;
 
-            localStorage.setItem('symptoms', symptoms);
-            localStorage.setItem('temperature', temperature);
-            localStorage.setItem('bloodPressure', bloodPressure);
-            localStorage.setItem('o2Level', o2Level);
-            localStorage.setItem('diagnosis', diagnosis);
-            localStorage.setItem('medicineName', medicineName);
-            localStorage.setItem('daysRest', daysRest);
-            localStorage.setItem('morning', morning);
-            localStorage.setItem('evening', evening);
-            localStorage.setItem('night', night);
-            localStorage.setItem('afterFood', afterFood);
-            localStorage.setItem('beforeFood', beforeFood);
-
             const mcName = localStorage.getItem('name');
             const mcRegistrationNumber = localStorage.getItem('registrationNumber');
-            const mcMedicineName = localStorage.getItem('medicineName');
-            const mcSymptoms = localStorage.getItem('symptoms');
-            const mcDaysRest = localStorage.getItem('daysRest');
-            const Morning = localStorage.getItem('morning') === 'true' ? 'Morning' : '';
-            const Evening = localStorage.getItem('evening') === 'true' ? 'Evening' : '';
-            const Night = localStorage.getItem('night') === 'true' ? 'Night' : '';
-            const afterfood = localStorage.getItem('afterFood') === 'true' ? 'After Food' : '';
-            const beforefood = localStorage.getItem('beforeFood') === 'true' ? 'Before Food' : '';
-            const frequency = [Morning, Evening, Night, afterfood, beforefood].filter(Boolean).join(', ');
+            const frequency = [
+                morning ? 'Morning' : '',
+                evening ? 'Evening' : '',
+                night ? 'Night' : '',
+                afterFood ? 'After Food' : '',
+                beforeFood ? 'Before Food' : ''
+            ].filter(Boolean).join(', ');
 
             document.getElementById('mc-name').innerText = mcName;
             document.getElementById('mc-registrationNumber').innerText = mcRegistrationNumber;
-            document.getElementById('mc-medicineName').innerText = mcMedicineName;
-            document.getElementById('mc-symptoms').innerText = mcSymptoms;
-            document.getElementById('mc-daysRest').innerText = mcDaysRest;
+            document.getElementById('mc-medicineName').innerText = medicineName;
+            document.getElementById('mc-symptoms').innerText = symptoms;
+            document.getElementById('mc-daysRest').innerText = daysRest;
             document.getElementById('mc-frequency').innerText = frequency;
-            document.getElementById('currentDate').textContent = `${formattedDate}`;
+            document.getElementById('currentDate').textContent = formattedDate;
+
+            document.getElementById('medicalCertificate').style.display = 'block';
 
             messageDetails = `
-                Name: ${mcName}\n
-                Registration Number: ${mcRegistrationNumber}\n
-                Medicine Name: ${mcMedicineName}\n
-                Symptoms: ${mcSymptoms}\n
-                Days Rest: ${mcDaysRest}\n
+                Name: ${mcName}
+                Registration Number: ${mcRegistrationNumber}
+                Medicine Name: ${medicineName}
+                Symptoms: ${symptoms}
+                Days Rest: ${daysRest}
                 Frequency: ${frequency}
-            `.replace(/<br>/g, '\n');
+            `.trim();
+        }
 
-            // window.location.href = 'Certificate.html';
-            
-        });
         function generatePDFAndSendEmail() {
-            const certificate = document.querySelector('.certificate');
-            html2pdf()
-            .from(certificate)
-            .saveAs('medical_certificate.pdf');
+            const certificate = document.getElementById('medicalCertificate');
+            html2pdf().from(certificate).saveAs('medical_certificate.pdf');
 
             const emailParams = {
                 from_name: 'Aryan',
                 to_email: localStorage.getItem('proctorEmail'),
-                message: `${messageDetails}`,
-                // attachment: 'medical_certificate.pdf'
+                message: messageDetails,
             };
 
             emailjs.init('CW669n751ze38NVN-');
@@ -544,18 +566,14 @@
         }
 
         function generatePDFAndSendEmailGuardian() {
-
-            const certificate = document.querySelector('.certificate');
-            html2pdf()
-            .from(certificate)
-            .saveAs('medical_certificate.pdf');
+            const certificate = document.getElementById('medicalCertificate');
+            html2pdf().from(certificate).saveAs('medical_certificate.pdf');
 
             const emailParams = {
                 from_name: 'Aryan',
                 to_email: localStorage.getItem('studentEmail'),
                 guardian_to: localStorage.getItem('guardianEmail'),
-                message: `${messageDetails}`,
-                // attachment: 'medical_certificate.pdf'
+                message: messageDetails,
             };
 
             emailjs.init('CW669n751ze38NVN-');
@@ -568,6 +586,152 @@
                     console.error('Email sending failed!', error);
                 });
         }
+
+        function loggingOut() {
+            alert("Logging out from " + localStorage.getItem('doctorName') + "'s Account.");
+        }
+
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+        let currentLanguage = localStorage.getItem('language') || 'english';
+        let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
+
+        function toggleSettings() {
+            const popup = document.getElementById('settingsPopup');
+            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        }
+
+        function changeFontSize(action) {
+            if (action === 'increase') {
+                currentFontSize += 2;
+            } else if (action === 'decrease') {
+                currentFontSize = Math.max(12, currentFontSize - 2);
+            }
+            document.documentElement.style.setProperty('--font-size', `${currentFontSize}px`);
+            localStorage.setItem('fontSize', currentFontSize);
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'english' ? 'tamil' : 'english';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate');
+                el.textContent = translations[currentLanguage][key] || key;
+            });
+        }
+
+        const translations = {
+            english: {
+                'VHealth': 'VHealth',
+                'Home': 'Home',
+                'Dashboard': 'Dashboard',
+                'Login': 'Login',
+                'Sign Up': 'Sign Up',
+                'Employee Id:': 'Employee Id:',
+                'Enter your employee id': 'Enter your employee id',
+                'Password:': 'Password:',
+                'Enter your password': 'Enter your password',
+                'Patient Details': 'Patient Details',
+                'Name:': 'Name:',
+                'Registration Number:': 'Registration Number:',
+                'Block:': 'Block:',
+                'Room Number:': 'Room Number:',
+                'Diagnosis': 'Diagnosis',
+                'Symptoms:': 'Symptoms:',
+                'Temp:': 'Temp:',
+                'BP:': 'BP:',
+                'O2 Level:': 'O2 Level:',
+                'Prescription': 'Prescription',
+                'Medicine Name:': 'Medicine Name:',
+                'Frequency:': 'Frequency:',
+                'Morning': 'Morning',
+                'Evening': 'Evening',
+                'Night': 'Night',
+                'After Food': 'After Food',
+                'Before Food': 'Before Food',
+                'Days Rest:': 'Days Rest:',
+                'View Medical Certificate': 'View Medical Certificate',
+                'Send to Student and Guardian': 'Send to Student and Guardian',
+                'Send to Proctor': 'Send to Proctor',
+                'Scan for New Student': 'Scan for New Student',
+                'Medical Certificate': 'Medical Certificate',
+                'Medication Details': 'Medication Details',
+                'Symptoms': 'Symptoms',
+                'Days of Rest Advice': 'Days of Rest Advice',
+                'Doctor\'s Signature:': 'Doctor\'s Signature:',
+                'Employee id:': 'Employee id:',
+                'Date:': 'Date:',
+                'Enter your name': 'Enter your name',
+                'Email:': 'Email:',
+                'Enter your email address': 'Enter your email address',
+                'Submit': 'Submit',
+                'Toggle Light/Dark Theme': 'Toggle Light/Dark Theme',
+                'Increase Font Size': 'Increase Font Size',
+                'Decrease Font Size': 'Decrease Font Size',
+                'Toggle English/Tamil': 'Toggle English/Tamil',
+                'Log Out': 'Log Out',
+            },
+            tamil: {
+                'VHealth': 'விஹெல்த்',
+                'Home': 'முகப்பு',
+                'Dashboard': 'டாஷ்போர்டு',
+                'Login': 'உள்நுழைய',
+                'Sign Up': 'பதிவு செய்யவும்',
+                'Employee Id:': 'ஊழியர் அடையாளம்:',
+                'Enter your employee id': 'உங்கள் ஊழியர் அடையாளத்தை உள்ளிடவும்',
+                'Password:': 'கடவுச்சொல்:',
+                'Enter your password': 'உங்கள் கடவுச்சொல்லை உள்ளிடவும்',
+                'Patient Details': 'மருத்துவ நோயாளி விவரங்கள்',
+                'Name:': 'பெயர்:',
+                'Registration Number:': 'பதிவு எண்:',
+                'Block:': 'பிளாக்:',
+                'Room Number:': 'அறை எண்:',
+                'Diagnosis': 'வியாதி',
+                'Symptoms:': 'இருக்குறிப்புகள்:',
+                'Temp:': 'வெப்பநிலை:',
+                'BP:': 'இரத்த அழுத்தம்:',
+                'O2 Level:': 'ஆக்சிஜன் நிலை:',
+                'Prescription': 'மருந்து பரிந்துரைகள்',
+                'Medicine Name:': 'மருந்து பெயர்:',
+                'Frequency:': 'அடிக்கடி:',
+                'Morning': 'காலை',
+                'Evening': 'மாலை',
+                'Night': 'இரவு',
+                'After Food': 'சாப்பிட்டபின்',
+                'Before Food': 'சாப்பிடும்முன்',
+                'Days Rest:': 'ஊறுகுறுக்க நாட்கள்:',
+                'View Medical Certificate': 'மருத்துவ சான்றிதழை பார்க்கவும்',
+                'Send to Student and Guardian': 'மாணவருக்கும் பாதுகாவலருக்கும் அனுப்பவும்',
+                'Send to Proctor': 'பிராஸெட்டருக்குச் அனுப்பவும்',
+                'Scan for New Student': 'புதிய மாணவர் ஸ்கேன் செய்யவும்',
+                'Medical Certificate': 'மருத்துவ சான்றிதழ்',
+                'Medication Details': 'மருந்து விவரங்கள்',
+                'Symptoms': 'இருக்குறிப்புகள்',
+                'Days of Rest Advice': 'ஊறுகுறுக்க நாட்களின் ஆலோசனை',
+                'Doctor\'s Signature:': 'மருத்துவர் கையொப்பம்:',
+                'Employee id:': 'ஊழியர் அடையாளம்:',
+                'Date:': 'தேதி:',
+                'Enter your name': 'உங்கள் பெயரை உள்ளிடவும்',
+                'Email:': 'மின்னஞ்சல்:',
+                'Enter your email address': 'உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்',
+                'Submit': 'சமர்ப்பிக்கவும்',
+                'Toggle Light/Dark Theme': 'ஒளி/இருண்ட தீமை மாறுங்கள்',
+                'Increase Font Size': 'எழுத்துரு அளவை பெருக்கவும்',
+                'Decrease Font Size': 'எழுத்துரு அளவை குறைக்கவும்',
+                'Toggle English/Tamil': 'ஆங்கிலம்/தமிழ் மாறுங்கள்',
+                'Log Out': 'வெளியேறு'
+            }
+        };
     </script>
 </body>
 </html>
