@@ -5,36 +5,424 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SignUp</title>
     <link rel="stylesheet" href="/style.css">
+    <style>
+      :root {
+          --bg-color: #f0f4f8;
+          --text-color: #333;
+          --h2-color: #2c3e50;
+          --label-color: #34495e;
+          --header-bg: #ffffff;
+          --form-bg: #ffffff;
+          --button-bg: #4a90e2;
+          --button-text: #ffffff;
+          --link-color: #4a90e2;
+          --font-size: 16px;
+      }
+
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          margin: 0;
+          padding: 0;
+          font-size: var(--font-size);
+          display: flex;
+          flex-direction: column;
+          /* justify-content: center;
+          align-items: center; */
+          min-height: 100vh;
+          background-color: var(--bg-color);
+          color: var(--text-color);
+          background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
+
+      .header {
+          background-color: var(--header-bg);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          padding: 1rem;
+          position: relative;
+          font-size: 1rem;
+      }
+
+      .nav-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          max-width: 1200px;
+          margin: 0 auto;
+      }
+
+      .logo {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: var(--link-color);
+          text-decoration: none;
+      }
+
+      .nav-links {
+          display: flex;
+          gap: 1rem;
+      }
+
+      .nav-links a {
+          color: var(--text-color);
+          text-decoration: none;
+          padding: 0.5rem 1rem;
+          border-radius: 4px;
+          transition: background-color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+          background-color: var(--bg-color);
+          color: var(--link-color);
+      }
+
+      .hamburger {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          width: 2rem;
+          height: 2rem;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+          z-index: 10;
+      }
+
+      .hamburger div {
+          width: 2rem;
+          height: 0.25rem;
+          background: var(--text-color);
+          border-radius: 10px;
+          transition: all 0.3s linear;
+          position: relative;
+          transform-origin: 1px;
+      }
+
+      .settings-popup {
+          display: none;
+          position: absolute;
+          top: 100%;
+          right: 0;
+          background-color: var(--form-bg);
+          border-radius: 8px;
+          padding: 1rem;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+          z-index: 1001;
+      }
+
+      .settings-popup button {
+          display: block;
+          width: 100%;
+          padding: 0.5rem;
+          margin-bottom: 0.5rem;
+          background-color: var(--button-bg);
+          color: var(--button-text);
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+      }
+
+      .main-content {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 2rem;
+      }
+
+      .form-container {
+          background-color: var(--form-bg);
+          padding: 2rem;
+          border-radius: 8px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          width: 100%;
+          max-width: 400px;
+      }
+
+      h2 {
+          color: var(--h2-color);
+          text-align: center;
+          margin-bottom: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      h2 svg {
+          margin-right: 10px;
+      }
+
+      .form-group {
+          margin-bottom: 1rem;
+      }
+
+      label {
+          display: block;
+          margin-bottom: 0.5rem;
+          color: var(--label-color);
+          font-weight: bold;
+          font-size: 1rem;
+      }
+
+      input[type="text"],
+      input[type="password"] {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 1rem;
+          box-sizing: border-box;
+      }
+
+      .submit-btn {
+          width: 100%;
+          padding: 0.75rem;
+          background-color: #4a90e2;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: background-color 0.3s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .submit-btn:hover {
+          background-color: #357abd;
+      }
+
+      .submit-btn svg {
+          margin-right: 5px;
+      }
+
+      .link {
+          color: #4a90e2;
+          text-decoration: none;
+          transition: color 0.3s;
+      }
+
+      .link:hover {
+          color: #357abd;
+      }
+
+      .dark-theme {
+          --bg-color: #1a1a1a;
+          --h2-color: #ffffff;
+          --label-color: rgb(229 231 235);
+          --text-color: #ffffff;
+          --header-bg: #2c2c2c;
+          --form-bg: #2c2c2c;
+          --button-bg: #4a90e2;
+          --button-text: #ffffff;
+          --link-color: #4a90e2;
+      }
+  </style>
 </head>
 <body>
+  <header class="header">
+    <nav class="nav-container">
+        <!-- <img src="image.png" alt="Logo"> -->
+        <a href="/login" class="logo" data-translate="VHealth">VHealth</a>
+        <div class="nav-links">
+            <a href="/" data-translate="Home">Home</a>
+            <a href="/home" data-translate="Dashboard">Dashboard</a>
+            <a href="/login" data-translate="Login">Login</a>
+            <a href="/signup" data-translate="Sign Up">Sign Up</a>
+        </div>
+        <button class="hamburger" onclick="toggleSettings()" aria-label="Settings">
+            <div></div>
+            <div></div>
+            <div></div>
+        </button>
+    </nav>
+    <div class="settings-popup" id="settingsPopup">
+        <button onclick="toggleTheme()" data-translate="Toggle Light/Dark Theme">Toggle Light/Dark Theme</button>
+        <button onclick="changeFontSize('increase')" data-translate="Increase Font Size">Increase Font Size</button>
+        <button onclick="changeFontSize('decrease')" data-translate="Toggle English/Tamil">Toggle English/Tamil</button>
+        <button onclick="toggleLanguage()" data-translate="Toggle English/Tamil">Toggle English/Tamil</button>
+    </div>
+</header>
+    <main class="main-content">
+      <div class="form-container" enctype="multipart/form-data">
+          <h2 data-translate="Sign Up">SignUp</h2>
+          <form action="/signup" method="post">
+            <div class="form-group">
+              <label for="name" data-translate="Name:">Name:</label>
+              <input type="text" id="name" name="username" placeholder="Enter your name" required autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label for="password" data-translate="Password:">Password:</label>
+              <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+              <label for="aadhaar" data-translate="Employee Id:">Employee Id:</label>
+              <input type="text" id="eid" name="eid" placeholder="Enter your employee id" required>
+            </div>
+            <div class="form-group">
+              <label for="phone" data-translate="Email:">Email:</label>
+              <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+            </div>
+            <!-- <input type="file" name="photo" accept = "image/*" placeholder="Enter your photo: " required> -->
+            <!-- <br> -->
+            <!-- <br> -->
+            <button type="submit" class="submit-btn" data-translate="Submit">Submit</button>
+            <p><a class="link" href="/login" data-translate="Login">Login</a></p>
+            
+          </form>
+        </div>
+      </main>
+      <script>
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+        let currentLanguage = localStorage.getItem('language') || 'english';
+        let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 16;
 
-    <div class="form-container" enctype="multipart/form-data">
-        <h2>SignUp</h2>
-        <form action="/signup" method="post">
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="username" placeholder="Enter your name" required autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-          </div>
-          <div class="form-group">
-            <label for="aadhaar">Employee Id:</label>
-            <input type="text" id="eid" name="eid" placeholder="Enter your employee id" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
-          </div>
-          <!-- <input type="file" name="photo" accept = "image/*" placeholder="Enter your photo: " required> -->
-          <!-- <br> -->
-          <!-- <br> -->
-          <button type="submit" class="submit-btn">Submit</button>
-          <p style="margin-top: 10px; display: flex; justify-content: center;"><a class="link" href="/login" >Login</a></p>
-          
-        </form>
-      </div>
+        function toggleSettings() {
+            const popup = document.getElementById('settingsPopup');
+            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        }
+
+        function changeFontSize(action) {
+            if (action === 'increase') {
+                currentFontSize += 2;
+            } else if (action === 'decrease') {
+                currentFontSize = Math.max(12, currentFontSize - 2);
+            }
+            document.documentElement.style.setProperty('--font-size', `${currentFontSize}px`);
+            localStorage.setItem('fontSize', currentFontSize);
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'english' ? 'tamil' : 'english';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate');
+                el.textContent = translations[currentLanguage][key] || key;
+            });
+        }
+
+        const translations = {
+          english: {
+                'VHealth': 'VHealth',
+                'Home': 'Home',
+                'Dashboard': 'Dashboard',
+                'Login': 'Login',
+                'Sign Up': 'Sign Up',
+                'Employee Id:': 'Employee Id:',
+                'Enter your employee id': 'Enter your employee id',
+                'Password:': 'Password:',
+                'Enter your password': 'Enter your password',
+                'Patient Details': 'Patient Details',
+                'Name:': 'Name:',
+                'Registration Number:': 'Registration Number:',
+                'Block:': 'Block:',
+                'Room Number:': 'Room Number:',
+                'Diagnosis': 'Diagnosis',
+                'Symptoms:': 'Symptoms:',
+                'Temp:': 'Temp:',
+                'BP:': 'BP:',
+                'O2 Level:': 'O2 Level:',
+                'Prescription': 'Prescription',
+                'Medicine Name:': 'Medicine Name:',
+                'Frequency:': 'Frequency:',
+                'Morning': 'Morning',
+                'Evening': 'Evening',
+                'Night': 'Night',
+                'After Food': 'After Food',
+                'Before Food': 'Before Food',
+                'Days Rest:': 'Days Rest:',
+                'View Medical Certificate': 'View Medical Certificate',
+                'Send to Student and Guardian': 'Send to Student and Guardian',
+                'Send to Proctor': 'Send to Proctor',
+                'Scan for New Student': 'Scan for New Student',
+                'Medical Certificate': 'Medical Certificate',
+                'Medication Details': 'Medication Details',
+                'Symptoms': 'Symptoms',
+                'Days of Rest Advice': 'Days of Rest Advice',
+                'Doctor\'s Signature: Rishabh': 'Doctor\'s Signature: Rishabh',
+                'Employee id: 5703': 'Employee id: 5703',
+                'Date: 2024-11-10': 'Date: 2024-11-10',
+                'Enter your name': 'Enter your name',
+                'Email:': 'Email:',
+                'Enter your email address': 'Enter your email address',
+                'Submit': 'Submit',
+                'Toggle Light/Dark Theme': 'Toggle Light/Dark Theme',
+                'Increase Font Size': 'Increase Font Size',
+                'Decrease Font Size': 'Decrease Font Size',
+                'Toggle English/Tamil': 'Toggle English/Tamil'
+            },
+            tamil: {
+                'VHealth': 'விஹெல்த்',
+                'Home': 'முகப்பு',
+                'Dashboard': 'டாஷ்போர்டு',
+                'Login': 'உள்நுழைய',
+                'Sign Up': 'பதிவு செய்யவும்',
+                'Employee Id:': 'ஊழியர் அடையாளம்:',
+                'Enter your employee id': 'உங்கள் ஊழியர் அடையாளத்தை உள்ளிடவும்',
+                'Password:': 'கடவுச்சொல்:',
+                'Enter your password': 'உங்கள் கடவுச்சொல்லை உள்ளிடவும்',
+                'Patient Details': 'மருத்துவ நோயாளி விவரங்கள்',
+                'Name:': 'பெயர்:',
+                'Registration Number:': 'பதிவு எண்:',
+                'Block:': 'பிளாக்:',
+                'Room Number:': 'அறை எண்:',
+                'Diagnosis': 'வியாதி',
+                'Symptoms:': 'இருக்குறிப்புகள்:',
+                'Temp:': 'வெப்பநிலை:',
+                'BP:': 'இரத்த அழுத்தம்:',
+                'O2 Level:': 'ஆக்சிஜன் நிலை:',
+                'Prescription': 'மருந்து பரிந்துரைகள்',
+                'Medicine Name:': 'மருந்து பெயர்:',
+                'Frequency:': 'அடிக்கடி:',
+                'Morning': 'காலை',
+                'Evening': 'மாலை',
+                'Night': 'இரவு',
+                'After Food': 'சாப்பிட்டபின்',
+                'Before Food': 'சாப்பிடும்முன்',
+                'Days Rest:': 'ஊறுகுறுக்க நாட்கள்:',
+                'View Medical Certificate': 'மருத்துவ சான்றிதழை பார்க்கவும்',
+                'Send to Student and Guardian': 'மாணவருக்கும் பாதுகாவலருக்கும் அனுப்பவும்',
+                'Send to Proctor': 'பிராஸெட்டருக்குச் அனுப்பவும்',
+                'Scan for New Student': 'புதிய மாணவர் ஸ்கேன் செய்யவும்',
+                'Medical Certificate': 'மருத்துவ சான்றிதழ்',
+                'Medication Details': 'மருந்து விவரங்கள்',
+                'Symptoms': 'இருக்குறிப்புகள்',
+                'Days of Rest Advice': 'ஊறுகுறுக்க நாட்களின் ஆலோசனை',
+                'Doctor\'s Signature: Rishabh': 'மருத்துவர் கையொப்பம்: ரிஷப்',
+                'Employee id: 5703': 'ஊழியர் அடையாளம்: 5703',
+                'Date: 2024-11-10': 'தேதி: 2024-11-10',
+                'Enter your name': 'உங்கள் பெயரை உள்ளிடவும்',
+                'Email:': 'மின்னஞ்சல்:',
+                'Enter your email address': 'உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும்',
+                'Submit': 'சமர்ப்பிக்கவும்',
+                'Toggle Light/Dark Theme': 'ஒளி/இருண்ட தீமை மாறுங்கள்',
+                'Increase Font Size': 'எழுத்துரு அளவை பெருக்கவும்',
+                'Decrease Font Size': 'எழுத்துரு அளவை குறைக்கவும்',
+                'Toggle English/Tamil': 'ஆங்கிலம்/தமிழ் மாறுங்கள்'
+            }
+        };
+
+        // Initialize theme, font size, and language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isDarkTheme) {
+                document.body.classList.add('dark-theme');
+            }
+            document.documentElement.style.setProperty('--font-size', `${currentFontSize}px`);
+            updateLanguage();
+        });
+    </script>
     
 </body>
 </html>
