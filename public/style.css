@@ -5,59 +5,88 @@
 }
 
 body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100vh;
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     justify-content: center;
+    background-color: #f0f4f8;
+    color: #333;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
-
 
 h2 {
     text-align: center;
     margin-bottom: 30px;
-  }
+    color: #4a90e2;
+    font-size: 24px;
+}
 
 .form-container {
-    width: 300px;
+    width: 350px;
     margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+    padding: 30px;
+    border: none;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-  .form-group {
-    margin-bottom: 15px;
-  }
+.form-group {
+    margin-bottom: 20px;
+}
 
-  .form-group label {
+/* .form-group label {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
-  }
+    color: #2c3e50;
+} */
 
-  .form-group input {
-    width: 100%;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-
-  .submit-btn {
-    display: block;
+.form-group input {
     width: 100%;
     padding: 10px;
-    background-color: #472dbb;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background-color: #4a90e2;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-  }
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
 
-  .submit-btn:hover {
-    background-color: #4565a0;
-  }
+.submit-btn:hover {
+    background-color: #2ecc71;
+}
 
-  p {
-    margin-top: 15px;
-  }
+p {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.link {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.link:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
