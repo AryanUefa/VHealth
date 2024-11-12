@@ -3,106 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Details</title>
+    <title>Student Details - VHealth</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
-        body{
-            /* background-color: rgba(255,166,0,0.25); */
-            background-color: rgba(100, 148, 237,0.35);
+        :root {
+            --bg-color: #f0f4f8;
+            --text-color: #333;
+            --h2-color: #2c3e50;
+            --label-color: #34495e;
+            --header-bg: #ffffff;
+            --form-bg: #ffffff;
+            --button-bg: #4a90e2;
+            --button-text: #ffffff;
+            --link-color: #4a90e2;
+            --font-size: 16px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            font-size: var(--font-size);
+            padding: 0;
             display: flex;
-            /* justify-content: center; */
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: var(--bg-color);
+            color: var(--link-color);
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 2rem;
+            height: 2rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .hamburger div {
+            width: 2rem;
+            height: 0.25rem;
+            background: var(--text-color);
+            border-radius: 10px;
+            transition: all 0.3s linear;
+            position: relative;
+            transform-origin: 1px;
+        }
+
+        .settings-popup {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--form-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1001;
+        }
+
+        .settings-popup button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
             align-items: center;
             flex-direction: column;
-            margin-top: 264px;
+            padding: 2rem;
         }
-        p{
-            display: none;
-        }
-        #fetchButton{
 
-            padding-top: 5px;
-            padding-bottom: 2px;
-            width: 210px;
-            height: 40px;
-            border-radius: 7px;
-            border-style: none;
-            border-color: rgba(100, 148, 237,0.35);
-            /* background-color: rgb(0, 0, 255); */
-            background-color: rgb(0, 150, 255);
-            /* background-color: #1976d2; */
-            /* background-color: coral; */
-            color: white;
-            font-size: 17px;
+        .form-container {
+            background-color: var(--form-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1, h2 {
+            color: var(--h2-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        #regnoForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--label-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
-        :hover#fetchButton {
-            /* background-color: rgb(0, 150, 255); */
-            background-color: rgb(0, 0, 255);
-            cursor: pointer;
-            color: white;
+
+        .submit-btn:hover {
+            background-color: #357abd;
         }
-        a{
-            text-decoration: none;
-            color: white;
-        }
+
         #logOutButton {
-            background-color: rgba(255, 0, 0,0.6); 
-            border: none; 
-            color: white; 
-            text-align: center; 
-            text-decoration: none; 
-            display: inline-block; 
-            padding: 10px 20px; 
-            margin: 10px; 
-            cursor: pointer; 
-            border-radius: 5px; 
-    }
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+        }
 
         #logOutButton:hover {
-            background-color: rgb(255, 0, 0); 
-}
+            background-color: #c0392b;
+        }
 
+        #fetchingMessage {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .dark-theme {
+            --bg-color: #1a1a1a;
+            --h2-color: #ffffff;
+            --label-color: rgb(229 231 235);
+            --text-color: #ffffff;
+            --header-bg: #2c2c2c;
+            --form-bg: #2c2c2c;
+            --button-bg: #4a90e2;
+            --button-text: #ffffff;
+            --link-color: #4a90e2;
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome Dr. <span id="dName"><%= doctorName %></span></h1>
-    <p id="dID"><%= doctorID %></p>
-    <div id="details"></div>
-    <button id="fetchButton" onclick="fetching()">Scan Student Details</button>
-    <span id="fetchingMessage" style="display: none;">Fetching...</span>
-    <a href="/"><button type="submit" onclick="loggingOut()" id="logOutButton" >Log Out</button></a>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="/login" class="logo" data-translate="VHealth">VHealth</a>
+            <div class="nav-links">
+                <a href="/" data-translate="Home">Home</a>
+                <a href="/home" data-translate="Dashboard">Dashboard</a>
+                <a href="/login" onclick="loggingOut()" data-translate="Log Out">Log Out</a>
+                <a href="/signup" data-translate="Sign Up">Sign Up</a>
+            </div>
+            <button class="hamburger" onclick="toggleSettings()" aria-label="Settings">
+                <div></div>
+                <div></div>
+                <div></div>
+            </button>
+        </nav>
+        <div class="settings-popup" id="settingsPopup">
+            <button onclick="toggleTheme()" data-translate="Toggle Light/Dark Theme">Toggle Light/Dark Theme</button>
+            <button onclick="changeFontSize('increase')" data-translate="Increase Font Size">Increase Font Size</button>
+            <button onclick="changeFontSize('decrease')" data-translate="Decrease Font Size">Decrease Font Size</button>
+            <button onclick="toggleLanguage()" data-translate="Toggle English/Tamil">Toggle English/Tamil</button>
+        </div>
+    </header>
+    <main class="main-content">
+        <h1>Welcome Dr. <span id="dName"><%= doctorName %></span></h1>
+        <p id="dID" style="display: none;"><%= doctorID %></p>
+        <div id="details"></div>
+        <form id="regnoForm">
+            <input type="text" id="regnoInput" placeholder="Enter Registration Number" required>
+            <button type="submit" id="fetchButton" class="submit-btn" data-translate="Fetch Student Details">Fetch Student Details</button>
+        </form>
+        <span id="fetchingMessage" style="display: none;">Fetching...</span>
+        <a href="/"><button type="button" onclick="loggingOut()" id="logOutButton" data-translate="Log Out">Log Out</button></a>
+    </main>
     <script>
         localStorage.setItem('doctorName', document.getElementById('dName').innerText);
         localStorage.setItem('empId', document.getElementById('dID').innerText);
-        function loggingOut(){
+        console.log(localStorage.getItem('empId'));
+
+        function loggingOut() {
             alert("Logging out from " + localStorage.getItem('doctorName') + "'s Account.");
         }
-        $(document).ready(function () {
-            $("#fetchButton").click(function () {
-                // Display the "Fetching..." message and hide the button
-                $("#fetchButton").hide();
-                $("#fetchingMessage").show();
-                $.ajax({
-                    url: "/runcmd",
-                    type: "GET",
-                    success: function (data) {
-                        var details = JSON.parse(data);
-                        
-                        localStorage.setItem('name', details.name);
-                        localStorage.setItem('registrationNumber', details.regno);
-                        localStorage.setItem('block', details.block);
-                        localStorage.setItem('roomNumber', details.room);
-                        localStorage.setItem('guardianEmail', details.parentmail);
-                        localStorage.setItem('proctorEmail', details.proctormail);
-                        localStorage.setItem('studentEmail', details.studentmail);
-                        window.location.href = `${details.address}`;
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error fetching details:", error);
-                    },
-                });
+
+        let isDarkTheme = localStorage.getItem('theme') === 'dark';
+        let currentLanguage = localStorage.getItem('language') || 'english';
+        let currentFontSize = parseInt(localStorage.getItem('fontSize')) || 24;
+
+        function toggleSettings() {
+            const popup = document.getElementById('settingsPopup');
+            popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleTheme() {
+            isDarkTheme = !isDarkTheme;
+            document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+        }
+
+        function changeFontSize(action) {
+            if (action === 'increase') {
+                currentFontSize += 2;
+            } else if (action === 'decrease') {
+                currentFontSize = Math.max(12, currentFontSize - 2);
+            }
+            document.documentElement.style.setProperty('--font-size', `${currentFontSize}px`);
+            localStorage.setItem('fontSize', currentFontSize);
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'english' ? 'tamil' : 'english';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate');
+                el.textContent = translations[currentLanguage][key] || key;
+            });
+        }
+
+        const translations = {
+            english: {
+                'VHealth': 'VHealth',
+                'Home': 'Home',
+                'Dashboard': 'Dashboard',
+                'Login': 'Login',
+                'Sign Up': 'Sign Up',
+                'Enter Registration Number': 'Enter Registration Number',
+                'Fetch Student Details': 'Fetch Student Details',
+                'Log Out': 'Log Out'
+            },
+            tamil: {
+                'VHealth': 'விஹெல்த்',
+                'Home': 'முகப்பு',
+                'Dashboard': 'டாஷ்போர்டு',
+                'Login': 'உள்நுழைய',
+                'Sign Up': 'பதிவு செய்யவும்',
+                'Enter Registration Number': 'பதிவு எண் உள்ளிடவும்',
+                'Fetch Student Details': 'மாணவர் விவரங்களை பெறவும்',
+                'Log Out': 'வெளியேறு'
+            }
+        };
+
+
+            // return translations[text] || text;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isDarkTheme) {
+                document.body.classList.add('dark-theme');
+            }
+            document.documentElement.style.setProperty('--font-size', `${currentFontSize}px`);
+            updateLanguage();
+        });
+
+        document.getElementById('regnoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const regno = document.getElementById('regnoInput').value;
+            document.getElementById('fetchButton').style.display = 'none';
+            document.getElementById('fetchingMessage').style.display = 'inline';
+
+            $.ajax({
+                url: "/runcmd",
+                type: "POST",
+                data: { regno: regno },
+                success: function (data) {
+                    const details = JSON.parse(data);
+                    
+                    localStorage.setItem('name', details.name);
+                    localStorage.setItem('registrationNumber', details.regno);
+                    localStorage.setItem('block', details.block);
+                    localStorage.setItem('roomNumber', details.room);
+                    localStorage.setItem('guardianEmail', details.parentmail);
+                    localStorage.setItem('proctorEmail', details.proctormail);
+                    localStorage.setItem('studentEmail', details.studentmail);
+                    
+                    window.location.href = `${details.address}`;
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching details:", error);
+                    document.getElementById('fetchButton').style.display = 'inline';
+                    document.getElementById('fetchingMessage').style.display = 'none';
+                    alert("Error fetching student details. Please try again.");
+                }
             });
         });
     </script>
 </body>
 </html>
+
+
+
+
+
